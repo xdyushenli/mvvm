@@ -11,14 +11,17 @@
 		<button v-on:click="sayHi">change model</button>
 	</div>
 
-	<script src="http://cdn.bootcss.com/vue/1.0.25/vue.js"></script>
+	<!-- <script src="http://cdn.bootcss.com/vue/1.0.25/vue.js"></script> -->
+	<script src="../js/mvvm.js"></script>
+	<script src="../js/compile.js"></script>
+	<script src="../js/observer.js"></script>
+	<script src="../js/watcher.js"></script>
 	<script>
-		var vm = new Vue({
+		var vm = new MVVM({
 			el: '#vue-app',
 			data: {
-				word: 'Hello World!'
+				word: 'Hello World!',
 			},
-
 			methods: {
 				sayHi: function() {
 					this.word = 'Hi, everybody!';

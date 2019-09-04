@@ -1,38 +1,22 @@
 // 订阅者
-function Watcher(vm, expOrFn, cb) {
+function Watcher() {
     // 回调函数
-    this.cb = cb;
-    // mvvm的实例
-    this.vm = vm;
-    // 对应数据源的属性名
-    this.expOrFn = expOrFn;
-    this.depIds = {};
 
-    if (typeof expOrFn === 'function') {
-        this.getter = expOrFn;
-    } else {
-        this.getter = this.parseGetter(expOrFn.trim());
-    }
+    // mvvm的实例
+
+    // 对应数据源的属性名
 
     // 此处为了触发属性的getter，从而在dep添加自己，结合Observer更易理解
-    this.value = this.get();
 }
 
 Watcher.prototype = {
     constructor: Watcher,
     // 每次数据变化时调用
     update: function() {
-        this.run();
     },
     run: function() {
-        var value = this.get();
-        var oldVal = this.value;
-        if (value !== oldVal) {
-            this.value = value;
-            this.cb.call(this.vm, value, oldVal);
-        }
     },
-    addDep: function (dep) {
+    addDep: function () {
         // 1. 每次调用run()的时候会触发相应属性的getter
         // getter里面会触发dep.depend()，继而触发这里的addDep
         // 2. 假如相应属性的dep.id已经在当前watcher的depIds里，说明不是一个新的属性，仅仅是改变了其值而已
@@ -47,34 +31,18 @@ Watcher.prototype = {
         // 这一步是在 this.get() --> this.getVMVal() 里面完成，forEach时会从父级开始取值，间接调用了它的getter
         // 触发了addDep(), 在整个forEach过程，当前wacher都会加入到每个父级过程属性的dep
         // 例如：当前watcher的是'child.child.name', 那么child, child.child, child.child.name这三个属性的dep都会加入当前watcher
-        if (!this.depIds.hasOwnProperty(dep.id)) {
+
             // 创建Watcher对象时触发,将该对象添加到Dep队列中,并保存Dep队列的id
-            dep.addSub(this);
-            this.depIds[dep.id] = dep;
-        }
     },
     // 这里会触发属性的getter（在observer.js的defineReactive中被设置），从而添加订阅者
     get: function() {
-        Dep.target = this;
         // 从mvvm对象中获取数据值，会先转到mvvm.js的_proxyData设置的get中，之后再跑到Observer.js的defineReactive设置的get中
-        var value = this.getter.call(this.vm, this.vm);
-        Dep.target = null;
-        return value;
     },
 
-    parseGetter: function (exp) {
+    parseGetter: function () {
         // \w用于匹配字母、数字和下划线，该正则用于检测变量是否符合规范
-        if (/[^\w.$]/.test(exp)) return; 
 
-        var exps = exp.split('.');
 
         // 该函数用于从收到的参数对象中获取到exps对应的属性的值
-        return function(obj) {
-            for (var i = 0, len = exps.length; i < len; i++) {
-                if (!obj) return;
-                obj = obj[exps[i]];
-            }
-            return obj;
-        }
     }
 };

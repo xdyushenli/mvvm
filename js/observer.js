@@ -62,6 +62,7 @@ Observer.prototype = {
 // 一个Dep实例对应多个Watcher实例。
 // 一个Watcher实例对应一个需要应用该数据的地方。
 // Observer观察者只有一个！
+// 当data对象中的属性是复杂类型时，才会创建新的观察者Observer
 
 // 统计Dep总数,Dep实例总数和data对象的属性数目一致
 var uid = 0;

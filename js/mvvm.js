@@ -26,8 +26,7 @@ function MVVM(options) {
     // 创建观察者
     // 由于js是引用传值，所以这里的data对象引用与_data和$options.data一致
     // 对于复杂值（如对象数组等），js是引用传值。对于简单值，js是值传递。
-    let sss = observe(data, this);
-    console.log(sss)
+    observe(data, this);
 
     // 编译指令，绑定事件，替换数据
     this.$compile = new Compile(options.el || document.body, this)
